@@ -2,16 +2,74 @@ import React, {Component} from 'react';
 import { AppRegistry, View, Text, Button, StyleSheet, Dimensions } from 'react-native';
 import MapView from 'react-native-maps'
 
+const {width, height} = Dimensions.get('window')
+
+
+const SCREEN_HEIGHT = height
+const SCREEN_WIDTH = width
+const ASPECT_RATIO = width / height
+const LATITUDE_DELTA = 0.0922
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
+
+
 export default class HomeScreen extends Component {
   constructor(props){
-      super(props);
+    super(props);
 
-      this.state = {
-      latitude: null,
-      longitude: null,
-      error:null,
-    };
+    this.state = {
+      initialPosition: {
+          latitude: 0,
+          longitude: 0,
+          latitudeDelta: 0,
+          longitudeDelta: 0
+      },
+      markerPosition: {
+        latitude: 0,
+        longitude: 0
+      }
+    }
   }
+
+  watchID: ?number = null
+
+  componentDidMount() {
+    navigator.geolocation.getCurrentPosition((position) => {
+        var lat = parseFloat(position.coords.latitude)
+        var long = parseFloat(position.coords.longitude)
+
+        var initialRegion = {
+            latitude: lat,
+            longitude: long,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA
+        }
+
+        this.setState({initialPosition: initialRegion})
+        this.setState({markerPosition: initialRegion})
+
+    }, (error) => alert(JSON.stringify(error)),
+    {enableHighAccuracy: true, timeout: 20000, maxiumAge: 1000})
+
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      var lat = parseFloat(position.coords.latitude)
+      var long = parseFloat(position.coords.longitude)
+
+      var lastRegion = {
+          latitude: lat,
+          longitude: long,
+          longitudeDelta: LONGITUDE_DELTA,
+          latitudeDelta: LATITUDE_DELTA
+      }
+
+      this.setState({initialPosition: lastRegion})
+      this.setState({markerPosition: lastRegion})
+    })
+  }
+
+  componentWillUnmount() {
+    navigator.geolocation.clearwatch(this.watchID)
+  }
+
 
   render(){
     const window = Dimensions.get('window');
@@ -22,12 +80,7 @@ export default class HomeScreen extends Component {
     return(
       <View style={styles.container}>
         <MapView
-          initialRegion={{
-            latitude: this.state.latitude,
-            longitude: this.state.longitude,
-            latitudeDelta: LATITUD_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
-          }}
+          region={this.state.initialPosition}
           style={ styles.map }
           followsUserLocation={true}
           showsUserLocation={true}
@@ -37,25 +90,9 @@ export default class HomeScreen extends Component {
           zoomEnabled={true}
           rotateEnabled={true}
         >
-        <Button onPress={() => this.props.navigation.navigate('History')}
-          title="History"></Button>
         </MapView>
       </View>
     );
-  }
-
-  componentWillMount(){
-    navigator.geolocation.getCurrentPosition(
-       (position) => {
-         this.setState({
-           latitude: position.coords.latitude,
-           longitude: position.coords.longitude,
-           error: null,
-         });
-       },
-       (error) => this.setState({ error: error.message }),
-       { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 },
-     );
   }
 }
 
