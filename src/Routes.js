@@ -9,9 +9,9 @@ const RootNavigator = DrawerNavigator({
   HomeScreen: {
     screen: HomeScreen,
   },
-  /*History: {
+  History: {
     screen: History,
-  },*/
+  },
 });
 
 export default RootNavigator;
