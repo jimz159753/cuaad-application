@@ -4,24 +4,32 @@ import { Text, View, StyleSheet, ListView, Dimensions, StatusBar, TouchableHighl
 
 const ds = new ListView.DataSource({rowHasChanged: (row1, row2) => row1 != row2});
 
-export default class History extends Component {
+export default class Places extends Component {
   constructor(){
     super();
     this.state = {
       dataSource: ds.cloneWithRows([
         'place1', 'place2', 'place3', 'place4', 'place5'
-      ]),
+      ]), /*It's going to be an array of objects for passing place parameters*/
     }
   }
 
-  renderRow(rowData, sectionID, rowID) {
+  pressCell(rowData){
+    alert('you pressed the button '+rowData);
+  }
+
+
+  renderRow(rowData) {
   return (
-      <TouchableHighlight underlayColor='#dddddd' style={{height:60,}}>
-        <View style={styles.eachButton}>
-        <Image style={styles.photo} source={{uri: 'http://www.udg.mx/sites/default/files/img_noticias/161013_cuaad_jam_1.jpg'}} ></Image>
-        <Text style={styles.text} numberOfLines={1}>{rowData}</Text>
-        <View style={{height: 1, backgroundColor: '#dddddd'}}/>
-        </View>
+      <TouchableHighlight 
+        underlayColor='#dddddd' 
+        style={{height:60,}} 
+        onPress={() => this.pressCell(rowData)}>
+          <View style={styles.eachButton}>
+          <Image style={styles.photo} source={{uri: 'http://www.udg.mx/sites/default/files/img_noticias/161013_cuaad_jam_1.jpg'}} ></Image>
+          <Text style={styles.text} numberOfLines={1}>{rowData}</Text>
+          <View style={{height: 1, backgroundColor: '#dddddd'}}/>
+          </View>
       </TouchableHighlight>
   );
 }

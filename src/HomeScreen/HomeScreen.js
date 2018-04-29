@@ -83,8 +83,6 @@ export default class HomeScreen extends Component {
 
     return(
       <View style={styles.container}>
-        <Button onPress={() => this.props.navigation.navigator('DrawerOpen')}
-          title="Open DrawNavigator" />
         <MapView
           region={this.state.initialPosition}
           style={ styles.map }
@@ -130,7 +128,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'gray',
 	},
   map: {
-    height: Dimensions.get('window').height - 200,
+    height: Dimensions.get('window').height,
     width: Dimensions.get('window').width,
   }
 });
