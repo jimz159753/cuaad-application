@@ -38,7 +38,7 @@ export default class Places extends Component {
 
     return(
       <View>
-        <Text style={{textAlign: 'center', fontSize: 30, marginBottom: 20 }}>HISTORY</Text>
+        <Text style={{textAlign: 'center', fontSize: 30, marginBottom: 20 }}>PLACES</Text>
       <ListView dataSource={this.state.dataSource} renderRow={this.renderRow.bind(this)}>
       </ListView>
       </View>
