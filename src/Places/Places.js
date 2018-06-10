@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import { Text, View, StyleSheet, ListView, Dimensions, StatusBar, TouchableHighlight, Image } from "react-native";
+import { Text, View, StyleSheet, ListView, Dimensions, StatusBar, TouchableHighlight, Image, WebView } from "react-native";
 
 
 const ds = new ListView.DataSource({rowHasChanged: (row1, row2) => row1 != row2});
@@ -12,10 +12,17 @@ export default class Places extends Component {
         'place1', 'place2', 'place3', 'place4', 'place5'
       ]), /*It's going to be an array of objects for passing place parameters*/
     }
+	this.renderRow = this.renderRow.bind(this);
   }
 
   pressCell(rowData){
-    alert('you pressed the button '+rowData);
+     return(
+	<View style={{flex: 1}}> 
+	<WebView
+        source={{uri: 'https://github.com/facebook/react-native'}}
+        style={{marginTop: 20, height: 1000}}
+      />
+	</View>);
   }
 
 
@@ -26,7 +33,7 @@ export default class Places extends Component {
         style={{height:60,}} 
         onPress={() => this.pressCell(rowData)}>
           <View style={styles.eachButton}>
-          <Image style={styles.photo} source={{uri: 'http://www.udg.mx/sites/default/files/img_noticias/161013_cuaad_jam_1.jpg'}} ></Image>
+          
           <Text style={styles.text} numberOfLines={1}>{rowData}</Text>
           <View style={{height: 1, backgroundColor: '#dddddd'}}/>
           </View>
@@ -37,10 +44,10 @@ export default class Places extends Component {
   render() {
 
     return(
-      <View>
-        <Text style={{textAlign: 'center', fontSize: 30, marginBottom: 20 }}>PLACES</Text>
-      <ListView dataSource={this.state.dataSource} renderRow={this.renderRow.bind(this)}>
-      </ListView>
+      <View style={{flex:1}}>
+        <Text style={{textAlign: 'center', fontSize: 30, marginBottom: 20 }}>Places</Text>
+      	<ListView dataSource={this.state.dataSource} renderRow={this.renderRow}>
+      	</ListView>
       </View>
     );
 }

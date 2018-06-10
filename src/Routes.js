@@ -27,7 +27,7 @@ const RootNavigator = TabNavigator({
 	        if (routeName === 'HomeScreen') {
 	          iconName = `map`;
 	        } else if (routeName === 'Places') {
-	          iconName = `places`;
+	          iconName = `history`;
 	        }
 
 	        // You can return any component that you like here! We usually use an
