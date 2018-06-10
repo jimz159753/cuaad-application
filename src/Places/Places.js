@@ -9,7 +9,7 @@ export default class Places extends Component {
     super();
     this.state = {
       dataSource: ds.cloneWithRows([
-        'place1', 'place2', 'place3', 'place4', 'place5'
+        'Casa Farah', 'place2', 'place3', 'place4', 'place5'
       ]), /*It's going to be an array of objects for passing place parameters*/
     }
 	this.renderRow = this.renderRow.bind(this);

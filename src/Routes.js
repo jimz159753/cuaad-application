@@ -3,6 +3,7 @@ import { View, Text, Button } from 'react-native';
 import { TabNavigator, TabBarBottom } from 'react-navigation';
 import HomeScreen from './HomeScreen/HomeScreen';
 import Places from './Places/Places';
+import Info from './Info/Info';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
 const RootNavigator = TabNavigator({
@@ -18,6 +19,12 @@ const RootNavigator = TabNavigator({
 		    	tabBarLabel: 'Places'
 		    },
 		},
+		Info: {
+		    screen: Info,
+		    navigatorOptions: {
+		    	tabBarLabel: 'Info'
+		    },
+		},
 	},
 	{
 		navigationOptions: ({ navigation }) => ({
@@ -28,6 +35,8 @@ const RootNavigator = TabNavigator({
 	          iconName = `map`;
 	        } else if (routeName === 'Places') {
 	          iconName = `history`;
+	        } else if (routeName === 'Info') {
+	          iconName = `info-circle`;
 	        }
 
 	        // You can return any component that you like here! We usually use an
