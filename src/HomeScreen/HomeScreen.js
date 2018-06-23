@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
-import { AppRegistry, View, Text, Button, StyleSheet, Dimensions } from 'react-native';
+import { AppRegistry, View, Text, TouchableHighlight, StyleSheet, Dimensions } from 'react-native';
 import MapView from 'react-native-maps'
 import MapViewDirections from 'react-native-maps-directions';
+import { connect } from 'react-redux';
+import { selectBuilding } from '../actions';
+import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
 const {width, height} = Dimensions.get('window')
 
@@ -21,7 +24,7 @@ const RANDOM_COORDS = [
 
 
 
-export default class HomeScreen extends Component {
+class HomeScreen extends Component {
   constructor(props){
     super(props);
 
@@ -59,7 +62,10 @@ export default class HomeScreen extends Component {
     }, (error) => alert(JSON.stringify(error)),
     {enableHighAccuracy: true, timeout: 20000, maxiumAge: 1000})
 
-    this.watchID = navigator.geolocation.watchPosition((position) => {
+  }
+
+  componentWillMount(){
+  	this.watchID = navigator.geolocation.watchPosition((position) => {
       var lat = parseFloat(position.coords.latitude)
       var long = parseFloat(position.coords.longitude)
 
@@ -69,9 +75,8 @@ export default class HomeScreen extends Component {
           longitudeDelta: LONGITUDE_DELTA,
           latitudeDelta: LATITUDE_DELTA
       }
-
       this.setState({initialPosition: lastRegion})
-      this.setState({markerPosition: lastRegion})
+      /*this.setState({markerPosition: lastRegion})*/
     })
   }
 
@@ -80,9 +85,17 @@ export default class HomeScreen extends Component {
     const { width, height }  = window
     let LATITUD_DELTA = 0.0922
     let LONGITUDE_DELTA = LATITUD_DELTA * (width / height)
-
     return(
       <View style={styles.container}>
+        <TouchableHighlight 
+          underlayColor={'rgba(255, 255, 255, 0.10)'}
+          style={styles.btn_center}
+          onPress={()=>alert('Pressed!')}
+          >
+          <Icon name={'anchor'} size={60} color={'gray'} />
+        
+         
+        </TouchableHighlight>
         <MapView
           region={this.state.initialPosition}
           style={ styles.map }
@@ -110,6 +123,7 @@ export default class HomeScreen extends Component {
           apikey={GOOGLE_MAPS_APIKEY}
           strokeWidth={3}
           strokeColor="hotpink"
+          resetOnChange={true}
         />
         </MapView>
         
@@ -128,7 +142,22 @@ const styles = StyleSheet.create({
 		backgroundColor: 'gray',
 	},
   map: {
+    position: 'absolute',
     height: Dimensions.get('window').height,
     width: Dimensions.get('window').width,
+    zIndex: -1
+  },
+  btn_center: {
+    position: 'absolute',
+    top: 500,
+    left: 30
   }
 });
+
+function mapStateToProps(state){
+  return {
+    name: state
+  }
+}
+
+export default connect(mapStateToProps, { selectBuilding })(HomeScreen);
