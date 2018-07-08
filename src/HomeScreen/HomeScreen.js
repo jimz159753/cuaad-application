@@ -49,27 +49,13 @@ class HomeScreen extends Component {
         longitude: 0
       }
     }
+    this.findMe = this .findMe.bind(this);
   }
 
   watchID: ?number = null
 
   componentDidMount() {
-    navigator.geolocation.getCurrentPosition((position) => {
-        var lat = parseFloat(position.coords.latitude)
-        var long = parseFloat(position.coords.longitude)
-
-        var initialRegion = {
-            latitude: lat,
-            longitude: long,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA
-        }
-
-        this.setState({initialPosition: initialRegion})
-        this.setState({markerPosition: initialRegion})
-
-    }, (error) => alert(JSON.stringify(error)),
-    {enableHighAccuracy: true, timeout: 20000, maxiumAge: 1000})
+    this.findMe();
 
   }
 
@@ -85,11 +71,31 @@ class HomeScreen extends Component {
           latitudeDelta: LATITUDE_DELTA
       }
       this.setState({initialPosition: lastRegion})
-      /*this.setState({markerPosition: lastRegion})*/
     })
   }
 
+  findMe(){
+    navigator.geolocation.getCurrentPosition((position) => {
+        var lat = parseFloat(position.coords.latitude)
+        var long = parseFloat(position.coords.longitude)
+
+        var initialRegion = {
+            latitude: lat,
+            longitude: long,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA
+        }
+
+        this.setState({initialPosition: initialRegion})
+
+    }, (error) => alert(JSON.stringify(error)),
+    {enableHighAccuracy: true, timeout: 20000, maxiumAge: 1000})
+  }
+
   render(){
+
+    let DESTINATION = this.props.obj.lat+','+this.props.obj.lon;
+    console.log('DESTINATION', DESTINATION)
     const window = Dimensions.get('window');
     const { width, height }  = window
     let LATITUD_DELTA = 0.0922
@@ -99,11 +105,9 @@ class HomeScreen extends Component {
         <TouchableHighlight 
           underlayColor={'rgba(255, 255, 255, 0.10)'}
           style={styles.btn_center}
-          onPress={()=>alert('Pressed!')}
+          onPress={()=>this.findMe()}
           >
           <Icon name={'anchor'} size={60} color={'gray'} />
-        
-         
         </TouchableHighlight>
         <MapView
           region={this.state.initialPosition}
@@ -126,14 +130,16 @@ class HomeScreen extends Component {
             />
         )
         }
-        {/*<MapViewDirections
+        {this.props.obj.lat?
+          <MapViewDirections
           origin={{latitude:this.state.initialPosition['latitude'], longitude:this.state.initialPosition['longitude']}}
-          destination="20.6792205,-103.3982859"
+          destination={DESTINATION}
           apikey={GOOGLE_MAPS_APIKEY}
           strokeWidth={3}
           strokeColor="hotpink"
           resetOnChange={true}
-        />*/}
+        />: null}
+        
         </MapView>
         
       </View>
@@ -165,7 +171,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state){
   return {
-    name: state
+    obj: state
   }
 }
 
