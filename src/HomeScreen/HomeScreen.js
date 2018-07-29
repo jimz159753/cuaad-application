@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { AppRegistry, View, Text, TouchableHighlight, StyleSheet, Dimensions } from 'react-native';
+import { AppRegistry, View, Text, TouchableHighlight, StyleSheet, Dimensions, Image } from 'react-native';
 import MapView from 'react-native-maps'
 import MapViewDirections from 'react-native-maps-directions';
 import { connect } from 'react-redux';
@@ -43,20 +43,17 @@ class HomeScreen extends Component {
           longitude: 0,
           latitudeDelta: 0,
           longitudeDelta: 0
-      },
-      markerPosition: {
-        latitude: 0,
-        longitude: 0
       }
     }
     this.findMe = this .findMe.bind(this);
+     this.renderMarkers = this.renderMarkers.bind(this);
   }
 
   watchID: ?number = null
 
   componentDidMount() {
     this.findMe();
-
+    this.renderMarkers();
   }
 
   componentWillMount(){
@@ -92,22 +89,38 @@ class HomeScreen extends Component {
     {enableHighAccuracy: true, timeout: 20000, maxiumAge: 1000})
   }
 
+  renderMarkers() {
+    const { navigation, obj } = this.props;
+    console.log(obj.name)
+
+    return RANDOM_COORDS.map(marker =>
+            (<MapView.Marker
+                  onPress={() => navigation.navigate('Info')}
+                  coordinate={{latitude: marker.lat, longitude: marker.long}}
+                  title={marker.title}
+                  description={marker.description}
+                  key={marker.id}
+              />
+            ))
+       
+  }
+
   render(){
 
     let DESTINATION = this.props.obj.lat+','+this.props.obj.lon;
-    console.log('DESTINATION', DESTINATION)
     const window = Dimensions.get('window');
     const { width, height }  = window
     let LATITUD_DELTA = 0.0922
     let LONGITUDE_DELTA = LATITUD_DELTA * (width / height)
     return(
       <View style={styles.container}>
+          
         <TouchableHighlight 
           underlayColor={'rgba(255, 255, 255, 0.10)'}
           style={styles.btn_center}
           onPress={()=>this.findMe()}
           >
-          <Icon name={'anchor'} size={60} color={'gray'} />
+          <Image source={require('../images/centrar.png')} style={{width: 60, height: 60}} />
         </TouchableHighlight>
         <MapView
           region={this.state.initialPosition}
@@ -121,14 +134,7 @@ class HomeScreen extends Component {
           rotateEnabled={true}
         >
         {
-        RANDOM_COORDS.map(marker =>
-            <MapView.Marker
-                coordinate={{latitude: marker.lat, longitude: marker.long}}
-                title={marker.title}
-                description={marker.description}
-                key={marker.id}
-            />
-        )
+          this.renderMarkers()
         }
         {this.props.obj.lat?
           <MapViewDirections

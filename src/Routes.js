@@ -7,13 +7,13 @@ import Info from './Info/Info';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
 const RootNavigator = TabNavigator({
-	  	HomeScreen: {
+	  	Map: {
 		    screen: HomeScreen,
 		    navigatorOptions: {
 		    	tabBarLabel: 'Map'
 		    },
 		},
-		Places: {
+		Lugares: {
 		    screen: Places,
 		    navigatorOptions: {
 		    	tabBarLabel: 'Places'
@@ -31,9 +31,9 @@ const RootNavigator = TabNavigator({
 	      tabBarIcon: ({ focused, tintColor }) => {
 	        const { routeName } = navigation.state;
 	        let iconName;
-	        if (routeName === 'HomeScreen') {
+	        if (routeName === 'Map') {
 	          iconName = `map`;
-	        } else if (routeName === 'Places') {
+	        } else if (routeName === 'Lugares') {
 	          iconName = `history`;
 	        } else if (routeName === 'Info') {
 	          iconName = `info-circle`;

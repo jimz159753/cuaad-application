@@ -21,8 +21,6 @@ class Places extends Component {
   }
 
   renderRow(rowData) {
-    console.log('Name place:',rowData);
-    console.log(this.props.obj)
     let place;
     switch(rowData){
       case 'casa-farah':
@@ -145,7 +143,7 @@ class Places extends Component {
   render() {
     return(
       <View style={{flex:1}}>
-        <Text style={{textAlign: 'center', fontSize: 30, marginBottom: 20 }}>Places</Text>
+        <Text style={{textAlign: 'center', fontSize: 30, marginBottom: 20 }}>Lugares</Text>
       	<ListView dataSource={this.state.dataSource} renderRow={this.renderRow}>
       	</ListView>
       </View>
