@@ -98,7 +98,6 @@ class HomeScreen extends Component {
                   onPress={() => navigation.navigate('Info')}
                   coordinate={{latitude: marker.lat, longitude: marker.long}}
                   title={marker.title}
-                  description={marker.description}
                   key={marker.id}
               />
             ))
