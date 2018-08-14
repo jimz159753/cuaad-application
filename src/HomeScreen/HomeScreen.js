@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { AppRegistry, View, Text, TouchableHighlight, StyleSheet, Dimensions } from 'react-native';
+import { AppRegistry, View, Text, TouchableHighlight, StyleSheet, Dimensions, Image } from 'react-native';
 import MapView from 'react-native-maps'
 import MapViewDirections from 'react-native-maps-directions';
 import { connect } from 'react-redux';
@@ -17,9 +17,18 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 const GOOGLE_MAPS_APIKEY = 'AIzaSyB6uuLYlh1lS4bEHWT-ChT4OQ8j_IJiRdU';
 
 const RANDOM_COORDS = [
-  {id:1, title:'Twin Lions', description: 'Descripcion de casino twin lions', lat:20.6792205, long:-103.3982859},
-  {id:2, title:'Camino Real', description: 'Descripcion de camino real', lat:20.6732333, long:-103.411237},
-  {id:3, title:'Mirall Cinema', description: 'Descripcion de mirall cinema', lat:20.66258, long:-103.4034842},
+  {id:1, title:'Casa Farah', lat:20.674243, long:-103.372476},
+  {id:2, title:'Casa Fernandez del Valle', lat:20.673005, long:-103.371547},
+  {id:3, title:'Casa Gustavo Cristo', lat:20.675590, long:-103.370869},
+  {id:4, title:'Expo Guadalajara', lat:20.652919, long:-103.3939527},
+  {id:5, title:'Hospicio Cabañas', lat:20.677093, long:-103.337774},
+  {id:6, title:'Museo Regional', lat:20.6777629, long:-103.348424},
+  {id:7, title:'Parainfo', lat:20.6746973, long:-103.3614527},
+  {id:8, title:'Privada Castellanos', lat:20.6087787, long:-103.3480183},
+  {id:9, title:'Privada Torreon', lat:20.6992344, long:-103.3981751},
+  {id:10, title:'Teatro Degollado', lat:20.6770708, long:-103.3469124},
+  {id:11, title:'Teatro Experimental de Jalisco', lat:20.660696, long:-103.349357},
+  {id:12, title:'Torre Chapultepec', lat:20.676624, long:-103.368985},
 ];
 
 
@@ -34,34 +43,17 @@ class HomeScreen extends Component {
           longitude: 0,
           latitudeDelta: 0,
           longitudeDelta: 0
-      },
-      markerPosition: {
-        latitude: 0,
-        longitude: 0
       }
     }
+    this.findMe = this .findMe.bind(this);
+     this.renderMarkers = this.renderMarkers.bind(this);
   }
 
   watchID: ?number = null
 
   componentDidMount() {
-    navigator.geolocation.getCurrentPosition((position) => {
-        var lat = parseFloat(position.coords.latitude)
-        var long = parseFloat(position.coords.longitude)
-
-        var initialRegion = {
-            latitude: lat,
-            longitude: long,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA
-        }
-
-        this.setState({initialPosition: initialRegion})
-        this.setState({markerPosition: initialRegion})
-
-    }, (error) => alert(JSON.stringify(error)),
-    {enableHighAccuracy: true, timeout: 20000, maxiumAge: 1000})
-
+    this.findMe();
+    this.renderMarkers();
   }
 
   componentWillMount(){
@@ -76,25 +68,58 @@ class HomeScreen extends Component {
           latitudeDelta: LATITUDE_DELTA
       }
       this.setState({initialPosition: lastRegion})
-      /*this.setState({markerPosition: lastRegion})*/
     })
   }
 
+  findMe(){
+    navigator.geolocation.getCurrentPosition((position) => {
+        var lat = parseFloat(position.coords.latitude)
+        var long = parseFloat(position.coords.longitude)
+
+        var initialRegion = {
+            latitude: lat,
+            longitude: long,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA
+        }
+
+        this.setState({initialPosition: initialRegion})
+
+    }, (error) => alert(JSON.stringify(error)),
+    {enableHighAccuracy: true, timeout: 20000, maxiumAge: 1000})
+  }
+
+  renderMarkers() {
+    const { navigation, obj } = this.props;
+    console.log(obj.name)
+
+    return RANDOM_COORDS.map(marker =>
+            (<MapView.Marker
+                  onPress={() => navigation.navigate('Info')}
+                  coordinate={{latitude: marker.lat, longitude: marker.long}}
+                  title={marker.title}
+                  key={marker.id}
+              />
+            ))
+       
+  }
+
   render(){
+
+    let DESTINATION = this.props.obj.lat+','+this.props.obj.lon;
     const window = Dimensions.get('window');
     const { width, height }  = window
     let LATITUD_DELTA = 0.0922
     let LONGITUDE_DELTA = LATITUD_DELTA * (width / height)
     return(
       <View style={styles.container}>
+          
         <TouchableHighlight 
           underlayColor={'rgba(255, 255, 255, 0.10)'}
           style={styles.btn_center}
-          onPress={()=>alert('Pressed!')}
+          onPress={()=>this.findMe()}
           >
-          <Icon name={'anchor'} size={60} color={'gray'} />
-        
-         
+          <Image source={require('../images/centrar.png')} style={{width: 60, height: 60}} />
         </TouchableHighlight>
         <MapView
           region={this.state.initialPosition}
@@ -108,23 +133,18 @@ class HomeScreen extends Component {
           rotateEnabled={true}
         >
         {
-        RANDOM_COORDS.map(marker =>
-            <MapView.Marker
-                coordinate={{latitude: marker.lat, longitude: marker.long}}
-                title={marker.title}
-                description={marker.description}
-                key={marker.id}
-            />
-        )
+          this.renderMarkers()
         }
-        <MapViewDirections
+        {this.props.obj.lat?
+          <MapViewDirections
           origin={{latitude:this.state.initialPosition['latitude'], longitude:this.state.initialPosition['longitude']}}
-          destination="20.6792205,-103.3982859"
+          destination={DESTINATION}
           apikey={GOOGLE_MAPS_APIKEY}
           strokeWidth={3}
           strokeColor="hotpink"
           resetOnChange={true}
-        />
+        />: null}
+        
         </MapView>
         
       </View>
@@ -156,7 +176,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state){
   return {
-    name: state
+    obj: state
   }
 }
 

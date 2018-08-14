@@ -13,7 +13,7 @@ class Info extends Component {
     return(
       <View style={{flex:1}}>
         <WebView 
-        source={{uri: `http://visionsistemica.cuaad.udg.mx/index.php/${this.props.name}/`}}
+        source={{uri: `http://visionsistemica.cuaad.udg.mx/index.php/${this.props.obj.name}/`}}
         style={{marginTop: 20}}
         />
       </View>
@@ -27,7 +27,7 @@ class Info extends Component {
 
 function mapStateToProps(state){
   return {
-    name: state
+    obj: state
   }
 }
 
